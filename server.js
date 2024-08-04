@@ -24,7 +24,7 @@ app.post("/webhook", async (req, res) => {
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
 
   // check if the incoming message contains text
-  if (message?.type === "img") {
+  if (message?.type === "text") {
     // extract the business number to send the reply from it
     const business_phone_number_id =
       req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
@@ -44,7 +44,7 @@ app.post("/webhook", async (req, res) => {
           type: "image",
           image: {
             link: "https://cdn.glitch.global/a3dbe63d-c9a5-4497-951e-fb1bcb91c0dd/portada_cubotwp.jpeg?v=1722815022795", // reemplaza con la URL de la imagen
-            caption: "Imagen de prueba", // reemplaza con el texto de la leyenda
+            caption: "Img cubotwp test", // reemplaza con el texto de la leyenda
           },
           context: {
             message_id: message.id, // shows the message as a reply to the original user message
