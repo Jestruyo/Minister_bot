@@ -38,27 +38,19 @@ app.post("/webhook", async (req, res) => {
       },
       data: {
         messaging_product: "whatsapp",
+        recipient_type: "individual",
         to: message.from,
-        text: { body: "CubotWp: " + message.text.body },
+        type: "image",
+        image: {
+          link: "https://www.luckyshrub.com/assets/succulents/aloe.png", // reemplaza con la URL de la imagen
+          caption: "Imagen de prueba", // reemplaza con el texto de la leyenda
+        },
         context: {
           message_id: message.id, // shows the message as a reply to the original user message
         },
       },
     });
 
-    // mark incoming message as read
-    await axios({
-      method: "POST",
-      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
-      headers: {
-        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-      },
-      data: {
-        messaging_product: "whatsapp",
-        status: "read",
-        message_id: message.id,
-      },
-    });
   }
 
   res.sendStatus(200);
