@@ -17,7 +17,7 @@ const conversationState = {};
 
 app.post("/webhook", async (req, res) => {
   // log incoming messages
-  console.log("Incoming webhook message:", JSON.stringify(req.body, null, 2));
+  console.log("CubotWp app message:", JSON.stringify(req.body, null, 2));
 
   // check if the webhook request contains a message
   // details on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
