@@ -54,6 +54,11 @@ app.post("/webhook", async (req, res) => {
     } catch (error) {
       console.error("Error al enviar imagen:", error.message);
     }
+  } else if (message?.text.body === "flow") {
+        // extract the business number to send the reply from it
+    const business_phone_number_id =
+      req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
+    
   }
 
   res.sendStatus(200);
