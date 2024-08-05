@@ -24,7 +24,7 @@ app.post("/webhook", async (req, res) => {
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
 
   // check if the incoming message contains text
-  if (message?.text.body === "imagen") {
+  if (message?.text.body === "sarah") {
     // extract the business number to send the reply from it
     const business_phone_number_id =
       req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
@@ -43,7 +43,7 @@ app.post("/webhook", async (req, res) => {
           to: message.from,
           type: "image",
           image: {
-            link: "https://cdn.glitch.global/a3dbe63d-c9a5-4497-951e-fb1bcb91c0dd/portada_cubotwp.jpeg?v=1722815022795", // reemplaza con la URL de la imagen
+            link: "https://cdn.glitch.global/a3dbe63d-c9a5-4497-951e-fb1bcb91c0dd/Filmes%20e%20S%C3%A9ries%20-%20Divertidamente.jpeg?v=1722823733987", // reemplaza con la URL de la imagen
             caption: "Img cubotwp test", // reemplaza con el texto de la leyenda
           },
           context: {
@@ -76,17 +76,13 @@ app.post("/webhook", async (req, res) => {
               "preview_url": true,
               "body": "Pagina jw: https://www.jw.org/es/"
             }
-
           },  
-            });
-
-          } catch (error){
-              console.error("Error al enviar imagen:", error.message);
-          }
-
+        });
+      } catch (error){
+        console.error("Error al enviar imagen:", error.message);
       }
-
-      res.sendStatus(200);
+  }
+  res.sendStatus(200);
 });
 
 // accepts GET requests at the /webhook endpoint. You need this URL to setup webhook initially.
