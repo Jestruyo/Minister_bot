@@ -24,7 +24,7 @@ app.post("/webhook", async (req, res) => {
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
 
   // check if the incoming message contains text
-  if (message?.type === "text") {
+  if (message?.text.body === "imagen") {
     // extract the business number to send the reply from it
     const business_phone_number_id =
       req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
@@ -53,6 +53,60 @@ app.post("/webhook", async (req, res) => {
       });
     } catch (error) {
       console.error("Error al enviar imagen:", error.message);
+    }
+  } else if (message?.text.body === "flow") {
+    // extract the business number to send the reply from it
+    const business_phone_number_id =
+      req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
+
+    try {
+      // send a reply message as per the docs here https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages
+      await axios({
+        method: "POST",
+        url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
+        headers: {
+          Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+        },
+        data: {
+          recipient_type: "individual",
+          messaging_product: "whatsapp",
+          to: message.from,
+          type: "interactive",
+          interactive: {
+            type: "flow",
+            header: {
+              type: "text",
+              text: "Flow message header"
+            },
+            body: {
+              text: "Flow message body"
+            },
+            footer: {
+              text: "Flow message footer"
+            },
+            action: {
+              name: "flow",
+              parameters: {
+                flow_message_version: "3",
+                flow_token: "AQAAAAACS5FpgQ_cAAAAAD0QI3s.",
+                flow_id: "1",
+                flow_cta: "Book!",
+                flow_action: "navigate",
+                flow_action_payload: {
+                  screen: "<SCREEN_NAME>",
+                  data: { 
+                    product_name: "name",
+                    product_description: "description",
+                    product_price: 100
+                  }
+                }
+              }
+            }
+          }
+        },
+      });
+    } catch (error) {
+      console.error("Error al enviar flow:", error.message);
     }
   }
 
