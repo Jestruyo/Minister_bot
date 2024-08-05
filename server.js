@@ -93,7 +93,7 @@ app.post("/webhook", async (req, res) => {
                 flow_cta: "Book!",
                 flow_action: "navigate",
                 flow_action_payload: {
-                  screen: "<SCREEN_NAME>",
+                  screen: "",
                   data: { 
                     product_name: "name",
                     product_description: "description",
