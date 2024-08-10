@@ -54,34 +54,7 @@ app.post("/webhook", async (req, res) => {
     } catch (error) {
       console.error("Error al enviar imagen:", error.message);
     }
-  } else if (message?.text.body === "jw") {
-      // extract the business number to send the reply from it
-      const business_phone_number_id =
-        req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
-    
-      try {
-        
-        await axios({
-          method: "POST",
-          url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
-          headers: {
-            Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-          },
-          data: {
-            "messaging_product": "whatsapp",
-            "recipient_type": "individual",
-            "to": message.from,
-            "type": "text",
-            "text": {
-              "preview_url": true,
-              "body": "Pagina jw: https://www.jw.org/es/"
-            }
-          },  
-        });
-      } catch (error){
-        console.error("Error al enviar imagen:", error.message);
-      }
-  }
+  } 
   res.sendStatus(200);
 });
 
