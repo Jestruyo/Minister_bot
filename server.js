@@ -13,7 +13,6 @@ app.use(express.json());
 
 const { WEBHOOK_VERIFY_TOKEN, GRAPH_API_TOKEN, PORT } = process.env;
 
-const conversationState = {};
 
 app.post("/webhook", async (req, res) => {
   // log incoming messages
@@ -22,39 +21,65 @@ app.post("/webhook", async (req, res) => {
   // check if the webhook request contains a message
   // details on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
+  const business_phone_number_id = req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
 
-  // check if the incoming message contains text
-  if (message?.text.body === "sarah") {
-    // extract the business number to send the reply from it
-    const business_phone_number_id =
-      req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
+  if (message?.text.body === "hola") {
+    // Mensaje de bienvenida
+    await axios({
+      method: "POST",
+      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
+      headers: {
+        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+      },
+      data: {
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: message.from,
+        type: "text",
+        text: {
+          body: "¡Hola! ¿Cómo estás?",
+        },
+      },
+    });
+  } else if (message?.text.body === "sí") {
+    // Preguntar el nombre del usuario
+    await axios({
+      method: "POST",
+      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
+      headers: {
+        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+      },
+      data: {
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: message.from,
+        type: "text",
+        text: {
+          body: "¿Cuál es tu nombre?",
+        },
+      },
+    });
+  } else if (message?.text.body !== "") {
+    // Mensaje personalizado con el nombre del usuario
+    const nombre = message.text.body;
+    await axios({
+      method: "POST",
+      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
+      headers: {
+        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
+      },
+      data: {
+        messaging_product: "whatsapp",
+        recipient_type: "individual",
+        to: message.from,
+        type: "text",
+        text: {
+          body: `¡Hola ${nombre}! ¿En qué puedo ayudarte?`,
+        },
+      },
+    });
+  }
 
-    try {
-      // send a reply message as per the docs here https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages
-      await axios({
-        method: "POST",
-        url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
-        headers: {
-          Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-        },
-        data: {
-          messaging_product: "whatsapp",
-          recipient_type: "individual",
-          to: message.from,
-          type: "image",
-          image: {
-            link: "https://cdn.glitch.global/a3dbe63d-c9a5-4497-951e-fb1bcb91c0dd/Filmes%20e%20S%C3%A9ries%20-%20Divertidamente.jpeg?v=1722823733987", // reemplaza con la URL de la imagen
-            caption: "Img cubotwp test", // reemplaza con el texto de la leyenda
-          },
-          context: {
-            message_id: message.id, // shows the message as a reply to the original user message
-          },
-        },
-      });
-    } catch (error) {
-      console.error("Error al enviar imagen:", error.message);
-    }
-  } 
   res.sendStatus(200);
 });
 
