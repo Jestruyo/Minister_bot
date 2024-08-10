@@ -37,11 +37,11 @@ app.post("/webhook", async (req, res) => {
         to: message.from,
         type: "text",
         text: {
-          body: "¡Hola! ¿Cómo estás? Espero que hayas tenido un excelente mes de servicio",
+          body: "¡Hola! Espero que hayas tenido un excelente mes de servicio.",
         },
       },
     });
-  } else if (message?.text.body === "bien") {
+  } else if (message && message.text && message.text.body.toLowerCase() === "bien") {
     // Preguntar el nombre del usuario
     await axios({
       method: "POST",
