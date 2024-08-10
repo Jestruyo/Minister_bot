@@ -23,7 +23,7 @@ app.post("/webhook", async (req, res) => {
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
   const business_phone_number_id = req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
 
-  if (message?.text.body === "hola") {
+  if (message && message.text && message.text.body.toLowerCase() === "informe") {
     // Mensaje de bienvenida
     await axios({
       method: "POST",
@@ -37,11 +37,11 @@ app.post("/webhook", async (req, res) => {
         to: message.from,
         type: "text",
         text: {
-          body: "¡Hola! ¿Cómo estás?",
+          body: "¡Hola! ¿Cómo estás? Espero que hayas tenido un excelente mes de servicio",
         },
       },
     });
-  } else if (message?.text.body === "sí") {
+  } else if (message?.text.body === "bien") {
     // Preguntar el nombre del usuario
     await axios({
       method: "POST",
@@ -59,7 +59,7 @@ app.post("/webhook", async (req, res) => {
         },
       },
     });
-  } else if (message?.text.body !== "") {
+  } else if (message && message.text && message.text.body !== "") {
     // Mensaje personalizado con el nombre del usuario
     const nombre = message.text.body;
     await axios({
