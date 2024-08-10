@@ -37,7 +37,7 @@ app.post("/webhook", async (req, res) => {
         to: message.from,
         type: "text",
         text: {
-          body: "¡Hola!  1️⃣",
+          body: "*¡Hola! Espero que hayas tenido un excelente mes de servicio. 😊*\n\nMarca\n1️⃣ si eres publicador,\n2️⃣ si eres precursor.",
         },
       },
     });
