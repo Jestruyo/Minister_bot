@@ -1,10 +1,3 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 import express from "express";
 import axios from "axios";
 
@@ -37,7 +30,7 @@ app.post("/webhook", async (req, res) => {
         to: message.from,
         type: "text",
         text: {
-          body: "*¡Hola! Espero que hayas tenido un excelente mes de servicio. 😊*\n\nMarca\n1️⃣ si eres publicador,\n2️⃣ si eres precursor.",
+          body: "*¡Hola! Espero que hayas tenido un excelente mes de servicio. 😊🙏🏻*\n\nMarca segun lo requieras:\n1️⃣ Si eres publicador,\n2️⃣ Si eres precursor.",
         },
       },
     });
