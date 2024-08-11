@@ -12,12 +12,25 @@ app.post("/webhook", async (req, res) => {
   console.log("CubotWp app message:", JSON.stringify(req.body, null, 2));
 
   // check if the webhook request contains a message
-  // details on WhatsApp text message payload: https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/payload-examples#text-messages
   const message = req.body.entry?.[0]?.changes[0]?.value?.messages?.[0];
   const business_phone_number_id = req.body.entry?.[0].changes?.[0].value?.metadata?.phone_number_id;
 
-  if (message && message.text && message.text.body.toLowerCase() === "informe") {
-    // Mensaje de bienvenida
+  // Mapeo de respuestas
+  const responses = {
+    informe: {
+      body: "*¡Hola! Espero que hayas tenido un excelente mes de servicio. 😊🙏🏻*\n\n*Marca segun lo requieras:\n1️⃣ Si eres publicador,\n2️⃣ Si eres precursor.",
+    },
+    bien: {
+      body: "¿Cuál es tu nombre?",
+    },
+    default: (nombre) => ({
+      body: `¡Hola ${nombre}! ¿En qué puedo ayudarte?`,
+    }),
+  };
+
+  if (message && message.text) {
+    const text = message.text.body.toLowerCase();
+    const response = responses[text] || responses.default(text);
     await axios({
       method: "POST",
       url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
@@ -29,46 +42,7 @@ app.post("/webhook", async (req, res) => {
         recipient_type: "individual",
         to: message.from,
         type: "text",
-        text: {
-          body: "*¡Hola! Espero que hayas tenido un excelente mes de servicio. 😊🙏🏻*\n\n*Marca segun lo requieras:\n1️⃣ Si eres publicador,\n2️⃣ Si eres precursor.",
-        },
-      },
-    });
-  } else if (message && message.text && message.text.body.toLowerCase() === "bien") {
-    // Preguntar el nombre del usuario
-    await axios({
-      method: "POST",
-      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
-      headers: {
-        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-      },
-      data: {
-        messaging_product: "whatsapp",
-        recipient_type: "individual",
-        to: message.from,
-        type: "text",
-        text: {
-          body: "¿Cuál es tu nombre?",
-        },
-      },
-    });
-  } else if (message && message.text && message.text.body !== "") {
-    // Mensaje personalizado con el nombre del usuario
-    const nombre = message.text.body;
-    await axios({
-      method: "POST",
-      url: `https://graph.facebook.com/v18.0/${business_phone_number_id}/messages`,
-      headers: {
-        Authorization: `Bearer ${GRAPH_API_TOKEN}`,
-      },
-      data: {
-        messaging_product: "whatsapp",
-        recipient_type: "individual",
-        to: message.from,
-        type: "text",
-        text: {
-          body: `¡Hola ${nombre}! ¿En qué puedo ayudarte?`,
-        },
+        text: response,
       },
     });
   }
