@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    environment:
+      - WEBHOOK_VERIFY_TOKEN=${WEBHOOK_VERIFY_TOKEN}
+      - GRAPH_API_TOKEN=${GRAPH_API_TOKEN}
+    ports:
+      - "3000:3000"
+    command: node server.js
+
+  ngrok:
+    build: .
+    command: npm run ngrok
+    ports:
+      - "4040:4040"
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    depends_on:
+      - app

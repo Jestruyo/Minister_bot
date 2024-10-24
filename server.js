@@ -23,6 +23,9 @@ app.post("/webhook", async (req, res) => {
     bien: {
       body: "¿Cuál es tu nombre?",
     },
+    reuniones: {
+      body: "*¡Genial! Que bueno que nos acompañes asi sea de forma virtual. Recuerda 1234 es nuestra contraseña.*\n\n1️⃣ Reunion entre semana | Viernes 7 pm: https://jworg.zoom.us/j/99106008401,\n2️⃣ Reunion fin de semana | Domingo 8:30 am: https://jworg.zoom.us/j/91928746645.",
+    },
     default: (nombre) => ({
       body: `¡Hola ${nombre}! ¿En qué puedo ayudarte?`,
     }),

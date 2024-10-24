@@ -5,7 +5,8 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "ngrok": "ngrok http 3000"
   },
   "author": "WhatsApp Team",
   "license": "MIT",
